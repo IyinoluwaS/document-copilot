@@ -9,21 +9,21 @@ Each phase ends with a **Done when** line. Don't start the next phase until it's
 ## Phase 0: Accounts and local tooling
 
 - [X] Install Python 3.12+, uv, Node 20+, pnpm (see README prerequisites)
-- [ ] Create Supabase project ([guides/supabase-setup.md](guides/supabase-setup.md)), enable `vector` extension availability, email auth only
-- [ ] Disable "Confirm email" for local dev (re-enable before pilot)
-- [ ] Create OpenAI API key, set a monthly spend limit
-- [ ] Run `uv run data/download.py`, confirm all 25 filings (5 tickers × 5 years) + `manifest.json`
-- [ ] Fix stale `AGENTS.md` references in README and `backend/` / `frontend/` CLAUDE.md files (renamed to `CLAUDE.md`)
+- [X] Create Supabase project ([guides/supabase-setup.md](guides/supabase-setup.md)), enable `vector` extension availability, email auth only
+- [X] Disable "Confirm email" for local dev (re-enable before pilot)
+- [X] Create OpenAI API key, set a monthly spend limit
+- [X] Run `uv run data/download.py`, confirm all 25 filings (5 tickers × 5 years) + `manifest.json`
+- [X] Fix stale `AGENTS.md` references in README and `backend/` / `frontend/` CLAUDE.md files (renamed to `CLAUDE.md`)
 
 **Done when:** you have Supabase URL/keys/direct DB URL, an OpenAI key, and the full corpus on disk.
 
 ## Phase 1: Backend skeleton + schema
 
-- [ ] `uv add` runtime + dev deps per [guides/backend-setup.md](guides/backend-setup.md)
-- [ ] `app/config.py`: pydantic-settings, fails fast on missing vars; fill `backend/.env` from `.env.example`
-- [ ] `app/main.py`: FastAPI app, CORS from `ALLOWED_ORIGINS`, `GET /health`
-- [ ] structlog setup
-- [ ] `app/database/models.py`: `profiles`, `chat_threads`, `chat_messages`, `message_citations`, `source_documents`, `document_chunks`
+- [X] `uv add` runtime + dev deps per [guides/backend-setup.md](guides/backend-setup.md)
+- [X] `app/config.py`: pydantic-settings, fails fast on missing vars; fill `backend/.env` from `.env.example`
+- [X] `app/main.py`: FastAPI app, CORS from `ALLOWED_ORIGINS`, `GET /health`
+- [X] structlog setup
+- [X] `app/database/models/` (one file per model): `users`, `chat_threads`, `chat_messages`, `message_citations`, `source_documents`, `document_chunks`
 - [ ] Alembic init; `env.py` reads `settings.database_url` (direct/session connection, not the pooler)
 - [ ] Initial migration, reviewed by hand, plus explicit ops: `create extension vector`, `vector(1536)` column, generated `tsvector` column, HNSW index, GIN indexes, RLS on user-owned tables
 - [ ] `uv run alembic upgrade head` against Supabase; verify tables in dashboard
@@ -72,7 +72,7 @@ Each phase ends with a **Done when** line. Don't start the next phase until it's
 
 - [ ] `auth/dependencies.py`: verify bearer token via Supabase Auth, `get_current_user`
 - [ ] Restrict sign-in to the Driftwood email domain (Supabase auth hook or backend check)
-- [ ] Upsert `profiles` row on first authenticated request
+- [ ] Upsert `users` row on first authenticated request
 - [ ] Thread endpoints: list, create, get messages (403 on other users' threads)
 - [ ] `POST /chat/stream`: AI SDK-compatible streaming (text deltas, then citation/source parts, error events)
 - [ ] `chat/orchestrator.py`: one turn end-to-end; persist user msg, assistant msg, citations, usage after success
